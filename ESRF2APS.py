@@ -86,19 +86,24 @@ def assign_data(data_path, group_path, dataset, output_file, key):
 
 	# Create a virtual layout for the output dataset
 	layout = h5py.VirtualLayout(dataset.shape, dtype=float)
-
-	# Iterate over each HDF5 file
-	for n, hdf5_file in enumerate(linked_files):
-		# Create the full path to the HDF5 file
-		file_path = os.path.join(data_path, hdf5_file)
-		
+	if key != '/exchange/data' and len(linked_files)>1:
+		#Removes averaged whites
+		file_path = os.path.join(data_path, linked_files[0])
 		# Create a virtual source for the current file
 		vsource = h5py.VirtualSource(file_path, gpath, shape=(int(dataset.shape[0]/len(linked_files)), dataset.shape[1], dataset.shape[2]))
-		
-		# Assign the virtual source to the layout
-		layout[n*int(dataset.shape[0]/len(linked_files)):(n+1)*int(dataset.shape[0]/len(linked_files)), :, :] = vsource
+		layout[:int(dataset.shape[0]/len(linked_files)), :, :] = vsource
+	else:			
+		# Iterate over each HDF5 file
+		for n, hdf5_file in enumerate(linked_files):
+			# Create the full path to the HDF5 file
+			file_path = os.path.join(data_path, hdf5_file)
+			# Create a virtual source for the current file
+			vsource = h5py.VirtualSource(file_path, gpath, shape=(int(dataset.shape[0]/len(linked_files)), dataset.shape[1], dataset.shape[2]))
+			
+			# Assign the virtual source to the layout
+			layout[n*int(dataset.shape[0]/len(linked_files)):(n+1)*int(dataset.shape[0]/len(linked_files)), :, :] = vsource
 
-	# Create a virtual dataset in the output file linked to the virtual layout
+		# Create a virtual dataset in the output file linked to the virtual layout
 	output_file.create_virtual_dataset(key, layout)
 
 
@@ -152,4 +157,3 @@ if __name__ == "__main__":
 
 	args = parser.parse_args()
 	APS_format(args.fname, args.outname)
-
