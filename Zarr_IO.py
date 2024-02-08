@@ -38,7 +38,7 @@ def h5tozarrAPS(file_name, proj=None, sino=None):
 	# Create data for /test/data2 if it doesn't exist
 	if 'data_flat' not in group_test:
 	    #data_flat = np.random.rand(100, 100, 10)
-	    group_test.create_dataset('data_flat', data=flat)
+	    group_test.create_dataset('data_white', data=flat)
 	    
 	if 'data_dark' not in group_test:
 	    #data_dark = np.random.rand(100, 100, 10)
