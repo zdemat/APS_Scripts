@@ -5,15 +5,12 @@ import matplotlib.pyplot as plt
 import os
 
 # Open the existing Zarr file
-def readAPSZarr(file_name, proj=None, sino=None):
+def readAPSZarr(file_name):
 	root = zarr.open(file_name, mode='r')
 
 	attributes_dict = {}
 	for key, value in root.attrs.items():
 	    attributes_dict[key] = value
-	    
-	[start_index[0]:end_index[0], start_index[1]:end_index[1], start_index[2]:end_index[2]]
-
 	return root['exchange/data'],root['exchange/data_white'], root['exchange/data_dark'], root['exchange/theta'], attributes_dict
 
 
