@@ -12,12 +12,13 @@ def readAPSZarr(file_name, proj=None, sino=None):
 	for key, value in root.attrs.items():
 	    attributes_dict[key] = value
 	    
+	[start_index[0]:end_index[0], start_index[1]:end_index[1], start_index[2]:end_index[2]]
 	if sino:
-		data = root['exchange/data'][:,sino[0]:sino[1],:]
+		data = root['exchange/data'][:,sino,:]
 	if proj:
-		data = root['exchange/data'][proj[0]:proj[1],:,:]
+		data = root['exchange/data'][proj,:,:]
 
-	return data, root['exchange/data_white'], root['exchange/data_dark'], root['exchange/theta'], attributes_dict
+	return data,root['exchange/data_white'], root['exchange/data_dark'], root['exchange/theta'], attributes_dict
 
 
 def h5tozarrAPS(file_name, proj=None, sino=None):
@@ -41,7 +42,38 @@ def h5tozarrAPS(file_name, proj=None, sino=None):
 	# Create data for /test/data2 if it doesn't exist
 	if 'data_flat' not in group_test:
 	    #data_flat = np.random.rand(100, 100, 10)
-	    group_test.create_dataset('data_white', data=flat)
+	    group_test.create_dataset('data_flat', data=flat)
+	    
+	if 'data_dark' not in group_test:
+	    #data_dark = np.random.rand(100, 100, 10)
+	    group_test.create_dataset('data_dark', data=dark)
+	    
+	if 'theta' not in group_test:
+	    #theta = np.random.rand(100)
+	    group_test.create_dataset('theta', data=theta)
+
+	group_D = root.require_group('default')
+	group_I = root.require_group('instrument')
+	group_P = root.require_group('process')
+
+
+	for key, value in meta.items():
+	    root.attrs[key] = value
+
+def writeAPSZarr(fname, proj, flat, dark, theta, meta):
+	# Create a structured Zarr file
+	root = zarr.open(fname, mode='w')
+
+	# Create data for /test/data1 if it doesn't exist
+	group_test = root.require_group('exchange')
+	if 'data' not in group_test:
+	    #data = np.random.rand(100, 100, 100)
+	    group_test.create_dataset('data', data=proj)
+
+	# Create data for /test/data2 if it doesn't exist
+	if 'data_flat' not in group_test:
+	    #data_flat = np.random.rand(100, 100, 10)
+	    group_test.create_dataset('data_flat', data=flat)
 	    
 	if 'data_dark' not in group_test:
 	    #data_dark = np.random.rand(100, 100, 10)
