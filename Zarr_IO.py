@@ -5,13 +5,19 @@ import matplotlib.pyplot as plt
 import os
 
 # Open the existing Zarr file
-def readAPSZarr(file_name):
+def readAPSZarr(file_name, proj=None, sino=None):
 	root = zarr.open(file_name, mode='r')
 
 	attributes_dict = {}
 	for key, value in root.attrs.items():
 	    attributes_dict[key] = value
-	return root['exchange/data'],root['exchange/data_white'], root['exchange/data_dark'], root['exchange/theta'], attributes_dict
+	    
+	if sino:
+		data = root['exchange/data'][:,sino[0]:sino[1],:]
+	if proj:
+		data = root['exchange/data'][proj[0]:proj[1],:,:]
+
+	return data, root['exchange/data_white'], root['exchange/data_dark'], root['exchange/theta'], attributes_dict
 
 
 def h5tozarrAPS(file_name, proj=None, sino=None):
