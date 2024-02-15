@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-mkdir ~/epics
-cd ~/epics
+mkdir $HOME/epics
+cd $HOME/epics
 
 git clone https://github.com/epics-base/epics-base.git
 cd epics-base
@@ -14,12 +14,12 @@ sleep 2
 
 export EPICS_BASE=$HOME/epics/epics-base
 
-cd ~/epics
+cd $HOME/epics
 pwd
 
 
 sleep 2
-#wget https://docs2bm.readthedocs.io/en/latest/_downloads/1d614a4d479109280142250a420432b2/assemble_synApps.sh
+wget https://github.com/mittoalb/Scripts_epics/blob/main/assemble_synApps.sh
 
 echo -e "\e[32mBuilding synApps\e[0m"
 
@@ -79,8 +79,3 @@ fi
 cd $HOME/epics/synApps/support
 
 make -sj
-
-
-
-
-
